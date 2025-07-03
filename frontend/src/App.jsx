@@ -1,10 +1,20 @@
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Register from './pages/Register';
+import Login from './pages/Login';
 
-export default function App() {
+function App() {
   return (
-    <div className="app-container">
-      <h1>✨ QuoteVerse is live, Jayesh! 🚀</h1>
-      <p>Welcome to your quote sharing app.</p>
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
 }
+
+export default App;

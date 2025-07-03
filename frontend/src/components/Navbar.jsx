@@ -1,23 +1,29 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import './Navbar.css';
 
-function Navbar({ isLoggedIn, onLogout }) {
+export default function Navbar() {
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
   return (
     <nav className="navbar">
-      <div className="navbar-left">
-        <Link to="/" className="logo">QuoteVerse</Link>
-      </div>
-      <div className="navbar-right">
+      <h1>QuoteVerse</h1>
+      <div className="nav-links">
         <Link to="/">Home</Link>
-        {isLoggedIn && <Link to="/add">Add Quote</Link>}
-        {isLoggedIn && <Link to="/dashboard">My Quotes</Link>}
-        {!isLoggedIn && <Link to="/login">Login</Link>}
-        {!isLoggedIn && <Link to="/register">Register</Link>}
-        {isLoggedIn && <button onClick={onLogout} className="logout-btn">Logout</button>}
+        <Link to="/register">Register</Link>
+        <Link to="/login">Login</Link>
+        <button onClick={toggleTheme} className="theme-btn">
+          {theme === 'light' ? '🌙 Dark' : '🌞 Light'}
+        </button>
       </div>
     </nav>
   );
 }
-
-export default Navbar;
