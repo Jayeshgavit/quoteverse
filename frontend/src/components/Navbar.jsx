@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
 import './Navbar.css';
 
 export default function Navbar() {
@@ -15,11 +15,12 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <h1>QuoteVerse</h1>
+      <NavLink to="/" className="logo"><h1>QuoteVerse</h1></NavLink>
       <div className="nav-links">
-        <Link to="/">Home</Link>
-        <Link to="/register">Register</Link>
-        <Link to="/login">Login</Link>
+        <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>Home</NavLink>
+        <NavLink to="/quotes" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>Quotes</NavLink>
+        <NavLink to="/register" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>Register</NavLink>
+        <NavLink to="/login" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>Login</NavLink>
         <button onClick={toggleTheme} className="theme-btn">
           {theme === 'light' ? '🌙 Dark' : '🌞 Light'}
         </button>

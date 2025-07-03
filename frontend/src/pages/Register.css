@@ -2,16 +2,17 @@
   max-width: 400px;
   margin: 3rem auto;
   padding: 2rem;
-  background-color: #1e1e1e;
-  color: white;
+  background-color: var(--bg-secondary); /* 🌙 or ☀️ */
+  color: var(--text-color);
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 209, 255, 0.25);
   text-align: center;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .register-container h2 {
   margin-bottom: 1.5rem;
-  color: #00d1ff;
+  color: var(--accent-color); /* Bright blue or similar */
 }
 
 .register-container form {
@@ -26,17 +27,21 @@
   padding: 0.75rem;
   border: none;
   border-radius: 6px;
-  background-color: #2b2b2b;
-  color: white;
+  background-color: var(--input-bg);
+  color: var(--text-color);
   font-size: 1rem;
+}
+
+.register-container input::placeholder {
+  color: var(--placeholder-color);
 }
 
 .register-container button {
   padding: 0.8rem;
-  background-color: #00d1ff;
+  background-color: var(--accent-color);
   border: none;
   border-radius: 6px;
-  color: black;
+  color: var(--button-text);
   font-weight: bold;
   font-size: 1rem;
   cursor: pointer;
@@ -44,17 +49,17 @@
 }
 
 .register-container button:hover {
-  background-color: #00aacc;
+  background-color: var(--accent-color-hover);
 }
 
 .show-pass {
   font-size: 0.9rem;
-  color: #ccc;
+  color: var(--text-muted);
   text-align: left;
 }
 
 .register-message {
   margin-top: 1rem;
   font-size: 1rem;
-  color: #00ffcc;
+  color: var(--success-color);
 }

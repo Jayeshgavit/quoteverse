@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import './Register.css'; // ✅ Separate CSS file
+import './Register.css'; // 🌈 Updated with theme-aware styles
 
 export default function Register() {
   const [form, setForm] = useState({
