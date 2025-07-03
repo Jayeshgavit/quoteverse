@@ -21,9 +21,6 @@ export default function Navbar() {
         <NavLink to="/quotes" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>Quotes</NavLink>
         <NavLink to="/register" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>Register</NavLink>
         <NavLink to="/login" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>Login</NavLink>
-        <button onClick={toggleTheme} className="theme-btn">
-          {theme === 'light' ? '🌙 Dark' : '🌞 Light'}
-        </button>
       </div>
     </nav>
   );

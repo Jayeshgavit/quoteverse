@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Register.css'; // 🌈 Updated with theme-aware styles
+import './Register.css'; // 🎨 Your custom styles
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -12,6 +13,7 @@ export default function Register() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -32,16 +34,23 @@ export default function Register() {
         password: form.password,
       });
 
-      setMessage('✅ Registered successfully!');
+      setMessage('✅ Registered successfully! Redirecting...');
       setForm({ name: '', email: '', password: '', confirmPassword: '' });
+
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
     } catch (err) {
-      setMessage('❌ Registration failed. ' + (err.response?.data?.message || 'Try again.'));
+      setMessage(
+        '❌ Registration failed. ' + (err.response?.data?.message || 'Please try again.')
+      );
     }
   };
 
   return (
     <div className="register-container">
       <h2>🌟 Create Your QuoteVerse Account</h2>
+
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -75,6 +84,7 @@ export default function Register() {
           onChange={handleChange}
           required
         />
+
         <label className="show-pass">
           <input
             type="checkbox"
@@ -83,9 +93,18 @@ export default function Register() {
           />
           Show Password
         </label>
+
         <button type="submit">Register</button>
       </form>
+
       {message && <p className="register-message">{message}</p>}
+
+      <p className="register-footer">
+        Already have an account?{' '}
+        <span onClick={() => navigate('/login')} className="login-link">
+          Login here
+        </span>
+      </p>
     </div>
   );
 }
