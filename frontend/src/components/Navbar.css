@@ -21,6 +21,73 @@
 /* Logo that links to home */
 .logo {
   text-decoration: none;
+  font-size: 1.rem; /* 🔽 Slightly reduced font size */
+  font-weight: 600;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+  margin: 0;
+  line-height: 1;
+}
+
+/* Navigation links wrapper */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem; /* 🔽 Tighter spacing */
+}
+
+/* Nav link base style */
+.nav-item {
+  position: relative;
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 1rem; /* 🔽 Reduced size */
+  padding: 4px 8px; /* 🔽 Smaller paddings */
+  border-radius: 4px;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  line-height: 1.2;
+}
+
+/* Underline animation */
+.nav-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background-color: var(--btn-bg);
+  transition: width 0.3s ease;
+}
+
+.nav-item:hover {
+  color: var(--btn-bg);
+}
+
+.nav-item:hover::after {/* Navbar.css */
+
+.navbar {
+  padding: 0.1rem 1.3rem;/* 🔽 Further reduced top/bottom padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--navbar-border);
+  min-height: 48px; /* ✅ Ensures compact, consistent height */
+}
+.navbar * {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Logo that links to home */
+.logo {
+  text-decoration: none;
   font-size: 1.1rem; /* 🔽 Slightly reduced font size */
   font-weight: 600;
   color: var(--text-color);
@@ -95,4 +162,47 @@
 .theme-btn:hover {
   background-color: #0748aa;
   color: #fff;
+}
+  width: 100%;
+}
+
+/* Active link style */
+.nav-item.active {
+  color: var(--btn-bg);
+  background-color: var(--active-bg);
+  font-weight: 600;
+}
+
+.nav-item.active::after {
+  width: 100%;
+}
+
+/* Theme toggle button */
+.theme-btn {
+  padding: 4px 10px;
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.theme-btn:hover {
+  background-color: #0748aa;
+  color: #fff;
+}
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--link-color);
+  cursor: pointer;
+  font-weight: 500;
+  margin-left: 1rem;
+}
+
+.logout-btn:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
 }

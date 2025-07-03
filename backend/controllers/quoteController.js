@@ -1,30 +1,31 @@
 const Quote = require('../models/Quote');
 
-exports.addQuote = async (req, res) => {
+const addQuote = async (req, res) => {
   try {
     const { text, author, category } = req.body;
-    const quote = await Quote.create({ text, author, category, user: req.user.id });
-    res.status(201).json(quote);
+    const newQuote = await Quote.create({
+      text,
+      author,
+      category,
+      user: req.user.id
+    });
+
+    res.status(201).json({ message: 'Quote added', quote: newQuote });
   } catch (err) {
-    res.status(500).json({ msg: 'Failed to add quote' });
+    res.status(500).json({ message: 'Failed to add quote', error: err.message });
   }
 };
 
-exports.getAllQuotes = async (req, res) => {
-  const quotes = await Quote.find().populate('user', 'name');
-  res.json(quotes);
-};
-
-exports.getUserQuotes = async (req, res) => {
-  const quotes = await Quote.find({ user: req.user.id });
-  res.json(quotes);
-};
-
-exports.deleteQuote = async (req, res) => {
-  const quote = await Quote.findById(req.params.id);
-  if (quote.user.toString() !== req.user.id) {
-    return res.status(401).json({ msg: 'Not authorized' });
+const getUserQuotes = async (req, res) => {
+  try {
+    const quotes = await Quote.find({ user: req.user.id }).sort({ createdAt: -1 });
+    res.json(quotes);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch quotes' });
   }
-  await quote.remove();
-  res.json({ msg: 'Quote deleted' });
+};
+
+module.exports = {
+  addQuote,
+  getUserQuotes
 };

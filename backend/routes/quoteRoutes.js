@@ -1,11 +1,9 @@
 const express = require('express');
-const { addQuote, getAllQuotes, getUserQuotes, deleteQuote } = require('../controllers/quoteController');
-const auth = require('../middleware/authMiddleware');
 const router = express.Router();
+const verifyToken = require('../middleware/verifyToken');
+const { addQuote, getUserQuotes } = require('../controllers/quoteController');
 
-router.post('/', auth, addQuote);
-router.get('/', getAllQuotes);
-router.get('/user', auth, getUserQuotes);
-router.delete('/:id', auth, deleteQuote);
+router.post('/', verifyToken, addQuote);
+router.get('/my', verifyToken, getUserQuotes);
 
 module.exports = router;
