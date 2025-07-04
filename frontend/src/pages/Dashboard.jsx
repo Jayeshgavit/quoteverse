@@ -1,6 +1,23 @@
+// File: Dashboard.jsx
 import { useEffect, useState, useRef } from 'react';
 import axios from '../api/axios';
 import './Dashboard.css';
+
+function QuoteCard({ quote, onDelete }) {
+  return (
+    <div className="quote-card">
+      <p>“{quote.text}”</p>
+      <span className="quote-meta">
+        {quote.author} | {quote.category} | {new Date(quote.createdAt).toDateString()}
+      </span>
+      {onDelete && (
+        <button className="delete-quote-btn" onClick={() => onDelete(quote._id)}>
+          🗑 Delete
+        </button>
+      )}
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('my');
@@ -11,31 +28,34 @@ export default function Dashboard() {
   const [category, setCategory] = useState('');
   const [message, setMessage] = useState('');
   const [myQuotes, setMyQuotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
   const [userData, setUserData] = useState({ name: '', email: '' });
 
   const fetchProfile = async () => {
-    try {
-      const res = await axios.get('/auth/users/me'); // ✅ fixed path
-      setProfilePic(res.data.profilePic || 'https://i.pravatar.cc/100?img=13');
-      setUserData({ name: res.data.name, email: res.data.email });
-    } catch (err) {
-      console.error('Failed to fetch profile', err);
-    }
+    const res = await axios.get('/auth/users/me');
+    setProfilePic(res.data.profilePic || 'https://i.pravatar.cc/100?img=13');
+    setUserData({ name: res.data.name, email: res.data.email });
   };
 
   const fetchMyQuotes = async () => {
-    try {
-      const res = await axios.get('/quotes/my');
-      setMyQuotes(res.data);
-    } catch (err) {
-      console.error('Failed to fetch user quotes', err);
-    }
+    const res = await axios.get('/quotes/my');
+    setMyQuotes(res.data);
   };
 
   useEffect(() => {
-    fetchProfile();
-    fetchMyQuotes();
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        await Promise.all([fetchProfile(), fetchMyQuotes()]);
+      } catch (err) {
+        setError('Failed to load dashboard data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
   const handleImageChange = async (e) => {
@@ -45,27 +65,18 @@ export default function Dashboard() {
     const reader = new FileReader();
     reader.onloadend = async () => {
       const base64Image = reader.result;
-      setProfilePic(base64Image); // Optimistic UI update
-
-      try {
-        await axios.put('/auth/users/profile-pic', { profilePic: base64Image }); // ✅ fixed path
-      } catch (err) {
-        console.error('Profile update failed', err);
-      }
+      setProfilePic(base64Image);
+      await axios.put('/auth/users/profile-pic', { profilePic: base64Image });
     };
     reader.readAsDataURL(file);
   };
 
-  const handleDelete = async (quoteId) => {
+  const handleDelete = async (id) => {
     const confirmed = window.confirm('Are you sure you want to delete this quote?');
     if (!confirmed) return;
 
-    try {
-      await axios.delete(`/quotes/${quoteId}`);
-      setMyQuotes((prev) => prev.filter((q) => q._id !== quoteId));
-    } catch (err) {
-      console.error('Delete failed', err);
-    }
+    await axios.delete(`/quotes/${id}`);
+    setMyQuotes((prev) => prev.filter((q) => q._id !== id));
   };
 
   const handleQuoteSubmit = async (e) => {
@@ -77,28 +88,24 @@ export default function Dashboard() {
       return;
     }
 
-    try {
-      const res = await axios.post('/quotes', { text: quoteText, author, category });
-
-      setMessage('✅ Quote uploaded!');
-      setQuoteText('');
-      setAuthor('');
-      setCategory('');
-      setMyQuotes([res.data.quote, ...myQuotes]);
-
-      setTimeout(() => {
-        setShowForm(false);
-        setMessage('');
-      }, 1500);
-    } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Something went wrong.';
-      setMessage(`❌ Upload failed. ${errorMsg}`);
-    }
+    const res = await axios.post('/quotes', { text: quoteText, author, category });
+    setMessage('✅ Quote uploaded!');
+    setQuoteText('');
+    setAuthor('');
+    setCategory('');
+    setMyQuotes([res.data.quote, ...myQuotes]);
+    setTimeout(() => {
+      setShowForm(false);
+      setMessage('');
+    }, 1500);
   };
+
+  if (loading) return <div>Loading dashboard...</div>;
+  if (error) return <div className="error-msg">{error}</div>;
 
   return (
     <div className="dashboard-wrapper">
-      {/* 🧑 Profile Section */}
+      {/* Profile Section */}
       <section className="profile-section">
         {profilePic ? (
           <img src={profilePic} alt="User" className="profile-pic" />
@@ -108,10 +115,7 @@ export default function Dashboard() {
         <div className="profile-info">
           <h2>{userData.name}</h2>
           <p>{userData.email}</p>
-          <button
-            className="update-pic-btn"
-            onClick={() => fileInputRef.current.click()}
-          >
+          <button onClick={() => fileInputRef.current.click()} className="update-pic-btn">
             📸 Update Profile Picture
           </button>
           <input
@@ -124,21 +128,21 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* 🌐 Tab Navigation */}
+      {/* Tabs */}
       <div className="dashboard-tabs">
         <button onClick={() => setActiveTab('my')}>📜 My Quotes</button>
         <button onClick={() => setActiveTab('saved')}>💾 Saved Quotes</button>
-        <button onClick={() => alert("🚧 Discover tab coming soon!")}>🧭 Discover</button>
+        <button onClick={() => alert('🚧 Discover tab coming soon!')}>🧭 Discover</button>
       </div>
 
-      {/* ➕ Add Quote Toggle */}
+      {/* Toggle Add Form */}
       <section className="add-quote-trigger">
         <button onClick={() => setShowForm(!showForm)} className="toggle-btn">
           {showForm ? 'Cancel' : '➕ Add New Quote'}
         </button>
       </section>
 
-      {/* 📝 Add Quote Form */}
+      {/* Add Quote Form */}
       {showForm && (
         <section className="quote-form-container">
           <form className="quote-form" onSubmit={handleQuoteSubmit}>
@@ -171,24 +175,13 @@ export default function Dashboard() {
         </section>
       )}
 
-      {/* 📃 Quote List */}
+      {/* My Quotes Section */}
       {activeTab === 'my' && (
         <section className="my-quotes-section">
           <h3>📝 Your Shared Quotes</h3>
           {myQuotes.length > 0 ? (
-            myQuotes.map((q) => (
-              <div key={q._id} className="quote-card">
-                <p>“{q.text}”</p>
-                <span className="quote-meta">
-                  {q.author} | {q.category} | {new Date(q.createdAt).toDateString()}
-                </span>
-                <button
-                  className="delete-quote-btn"
-                  onClick={() => handleDelete(q._id)}
-                >
-                  🗑 Delete
-                </button>
-              </div>
+            myQuotes.map((quote) => (
+              <QuoteCard key={quote._id} quote={quote} onDelete={handleDelete} />
             ))
           ) : (
             <p>No quotes yet. Share your first one!</p>
@@ -196,6 +189,7 @@ export default function Dashboard() {
         </section>
       )}
 
+      {/* Saved Quotes Placeholder */}
       {activeTab === 'saved' && (
         <section className="my-quotes-section">
           <h3>💾 Saved Quotes (Coming Soon)</h3>
