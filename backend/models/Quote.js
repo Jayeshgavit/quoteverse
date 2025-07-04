@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const quoteSchema = new mongoose.Schema({
-  text: { type: String, required: true },
-  author: { type: String, required: true },
-  category: { type: String, required: true },
+  text: String,
+  author: String,
+  category: String,
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  likes: { type: Number, default: 0 },     // ✅ Add this line
   createdAt: { type: Date, default: Date.now }
 });
 
