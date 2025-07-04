@@ -8,6 +8,7 @@ const {
   getUserQuotes,
   toggleLike,
   toggleSave,
+  deleteQuote,  // ✅ New Controller
 } = require('../controllers/quoteController');
 
 // ✅ Add a new quote (protected)
@@ -24,5 +25,8 @@ router.post('/:id/like', verifyToken, toggleLike);
 
 // ✅ Save/Unsave a quote
 router.post('/:id/save', verifyToken, toggleSave);
+
+// ✅ Delete a user's own quote
+router.delete('/:id', verifyToken, deleteQuote); // 👈 Added this route
 
 module.exports = router;

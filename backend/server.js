@@ -10,8 +10,10 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // for parsing application/json
 
+// ✅ Fix: Allow large JSON payloads (for base64 image uploads)
+app.use(express.json({ limit: '5mb' })); // ⬅️ You can increase if needed
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -20,12 +22,12 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log('✅ MongoDB Connected 🚀'))
 .catch((err) => {
   console.error('❌ MongoDB connection error:', err.message);
-  process.exit(1); // optional: exit app on failure
+  process.exit(1);
 });
 
 // Routes
 app.use('/api/quotes', require('./routes/quoteRoutes'));
-app.use('/api/auth', require('./routes/authRoutes')); // Login/Register routes
+app.use('/api/auth', require('./routes/authRoutes')); // Login/Register/Profile routes
 
 // Root Endpoint
 app.get('/', (req, res) => {

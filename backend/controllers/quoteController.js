@@ -98,10 +98,30 @@ const toggleSave = async (req, res) => {
   }
 };
 
+// ✅ Delete a quote (DELETE /api/quotes/:id)
+const deleteQuote = async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+    const quote = await Quote.findOneAndDelete({
+      _id: req.params.id,
+      user: userId, // Only allow user to delete their own quote
+    });
+
+    if (!quote) {
+      return res.status(403).json({ message: 'Quote not found or unauthorized' });
+    }
+
+    res.status(200).json({ message: 'Quote deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to delete quote', error: err.message });
+  }
+};
+
 module.exports = {
   addQuote,
   getAllQuotes,
   getUserQuotes,
   toggleLike,
   toggleSave,
+  deleteQuote, // ✅ Export it!
 };
