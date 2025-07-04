@@ -20,27 +20,29 @@ export default function QuoteCard({ quote, userId }) {
 
   // ❤️ Like handler
   const handleLike = async () => {
-    if (!isLoggedIn) return alert('🔐 Please login to like quotes.');
+    // if (!isLoggedIn) return alert('🔐 Please login to like quotes.');
 
-    try {
-      const res = await fetch(`http://localhost:2200/api/quotes/${quote._id}/like`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
+    // try {
+    //   const res = await fetch(`http://localhost:2200/api/quotes/${quote._id}/like`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: `Bearer ${token}`
+    //     }
+    //   });
 
-      if (res.ok) {
-        const data = await res.json();
-        setLikeCount(data.likes);   // 👍 update count
-        setLiked(data.liked);       // 🎯 backend controls toggle state
-      } else {
-        alert('❌ Failed to like quote.');
-      }
-    } catch (err) {
-      console.error('Like error:', err);
-    }
+    //   if (res.ok) {
+    //     const data = await res.json();
+    //     setLikeCount(data.likes);   // 👍 update count
+    //     setLiked(data.liked);       // 🎯 backend controls toggle state
+    //   } else {
+    //     alert('❌ Failed to like quote.');
+    //   }
+    // } catch (err) {
+    //   console.error('Like error:', err);
+    // }
+
+    alert("❤️ Like feature is currently under development.")
   };
 
   // 📌 Save handler
