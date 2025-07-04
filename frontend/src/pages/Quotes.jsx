@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { jwtDecode } from 'jwt-decode'; 
 import axios from '../api/axios';
 import QuoteCard from '../components/QuoteCard';
 import './Quotes.css';
@@ -9,26 +10,26 @@ export default function Quotes() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortOption, setSortOption] = useState('newest');
-  const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch all quotes from backend
+  const token = localStorage.getItem('token');
+const decoded = token ? jwtDecode(token) : null;
+  const userId = decoded?.userId || decoded?._id; // Adjust based on your token payload
+
+  // ✅ Fetch quotes from backend
   useEffect(() => {
     const fetchQuotes = async () => {
       try {
-        setLoading(true);
-        const res = await axios.get('/quotes/all'); // ✅ FIXED endpoint
+        const res = await axios.get('/quotes/all'); // backend route
         setQuotes(res.data);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching quotes:', error);
-        setLoading(false);
       }
     };
 
     fetchQuotes();
   }, []);
 
-  // ✅ Local filtering, search, sort
+  // ✅ Apply filters and sorting
   useEffect(() => {
     let result = [...quotes];
 
@@ -91,7 +92,7 @@ export default function Quotes() {
           </select>
         </div>
 
-        {/* 🧠 Category Filter */}
+        {/* 🎨 Categories */}
         <div className="quote-categories">
           {['All', 'Life', 'Love', 'Motivation', 'Wisdom', 'Success', 'Friendship'].map((cat) => (
             <button
@@ -104,15 +105,13 @@ export default function Quotes() {
           ))}
         </div>
 
-        {/* 📜 Quote Cards */}
+        {/* 📝 Quotes List */}
         <div className="quote-list">
-          {loading ? (
-            <p className="loading">⏳ Loading quotes...</p>
-          ) : filteredQuotes.length === 0 ? (
+          {filteredQuotes.length === 0 ? (
             <p className="no-quotes">No quotes found.</p>
           ) : (
             filteredQuotes.map((quote) => (
-              <QuoteCard key={quote._id} quote={quote} />
+              <QuoteCard key={quote._id} quote={quote} userId={userId} />
             ))
           )}
         </div>
