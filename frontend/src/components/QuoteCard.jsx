@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './QuoteCard.css';
 
 export default function QuoteCard({ quote, userId }) {
-  const [liked, setLiked] = useState(quote.likedBy?.includes(userId));
+  const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [likeCount, setLikeCount] = useState(quote.likes || 0);
-  const [saved, setSaved] = useState(quote.savedBy?.includes(userId));
   const [copied, setCopied] = useState(false);
 
   const token = localStorage.getItem('token');
   const isLoggedIn = !!token;
 
-  // ❤️ Like/Unlike handler
+  // ✅ Set like/save on load
+  useEffect(() => {
+    if (userId) {
+      setLiked(Array.isArray(quote.likedBy) && quote.likedBy.includes(userId));
+      setSaved(Array.isArray(quote.savedBy) && quote.savedBy.includes(userId));
+    }
+  }, [quote, userId]);
+
+  // ❤️ Like handler
   const handleLike = async () => {
-    if (!isLoggedIn) return alert('🔒 Please login to like quotes.');
+    if (!isLoggedIn) return alert('🔐 Please login to like quotes.');
 
     try {
       const res = await fetch(`http://localhost:2200/api/quotes/${quote._id}/like`, {
@@ -25,8 +33,8 @@ export default function QuoteCard({ quote, userId }) {
 
       if (res.ok) {
         const data = await res.json();
-        setLikeCount(data.likes);
-        setLiked(!liked);
+        setLikeCount(data.likes);   // 👍 update count
+        setLiked(data.liked);       // 🎯 backend controls toggle state
       } else {
         alert('❌ Failed to like quote.');
       }
@@ -35,28 +43,30 @@ export default function QuoteCard({ quote, userId }) {
     }
   };
 
-  // 📌 Save/Unsave handler
+  // 📌 Save handler
   const handleSave = async () => {
-    if (!isLoggedIn) return alert('🔐 Please login to save quotes.');
+     alert('🚧 Save feature is currently under development.');
+  return;
+    // if (!isLoggedIn) return alert('🔐 Please login to save quotes.');
 
-    try {
-      const res = await fetch(`http://localhost:2200/api/quotes/${quote._id}/save`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
+    // try {
+    //   const res = await fetch(`http://localhost:2200/api/quotes/${quote._id}/save`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: `Bearer ${token}`
+    //     }
+    //   });
 
-      if (res.ok) {
-        const data = await res.json();
-        setSaved(data.saved);
-      } else {
-        alert('❌ Failed to save quote.');
-      }
-    } catch (err) {
-      console.error('Save error:', err);
-    }
+    //   if (res.ok) {
+    //     const data = await res.json();
+    //     setSaved(data.saved); // ✅ Use actual saved state from backend
+    //   } else {
+    //     alert('❌ Failed to save quote.');
+    //   }
+    // } catch (err) {
+    //   console.error('Save error:', err);
+    // }
   };
 
   // 📋 Copy handler
@@ -77,20 +87,23 @@ export default function QuoteCard({ quote, userId }) {
       </div>
 
       <div className="quote-actions">
+        {/* ❤️ Like Button */}
         <button
           onClick={handleLike}
-          className={`quote-btn ${liked ? 'active liked' : ''}`}
+          className={`quote-btn ${liked ? 'liked' : ''}`}
         >
-          {liked ? `❤️ ${likeCount}` : `🤍 Like (${likeCount})`}
+          🤍 {likeCount} Likes
         </button>
 
+        {/* 📌 Save Button */}
         <button
           onClick={handleSave}
-          className={`quote-btn ${saved ? 'active saved' : ''}`}
+          className={`quote-btn ${saved ? 'saved active' : ''}`}
         >
           {saved ? '🔖 Saved' : '📌 Save'}
         </button>
 
+        {/* 📋 Copy Button */}
         <button
           onClick={handleCopy}
           className={`quote-btn ${copied ? 'copied' : ''}`}
