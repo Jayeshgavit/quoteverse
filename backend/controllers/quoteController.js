@@ -1,10 +1,10 @@
 const Quote = require('../models/Quote');
 
-// ✅ Add new quote (POST /api/quotes)
+// ✅ Add new quote
 const addQuote = async (req, res) => {
   try {
     const { text, author, category } = req.body;
-    const userId = req.user.id || req.user._id;
+    const userId = req.userId;
 
     const newQuote = await Quote.create({
       text,
@@ -13,42 +13,40 @@ const addQuote = async (req, res) => {
       user: userId,
     });
 
-    res.status(201).json({ message: 'Quote added', quote: newQuote });
+    res.status(201).json({ message: 'Quote added ✅', quote: newQuote });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to add quote', error: err.message });
+    res.status(500).json({ message: '❌ Failed to add quote', error: err.message });
   }
 };
 
-// ✅ Get all quotes (GET /api/quotes/all)
+// ✅ Get all quotes (public)
 const getAllQuotes = async (req, res) => {
   try {
     const quotes = await Quote.find()
       .sort({ createdAt: -1 })
       .populate('user', 'name');
-
     res.status(200).json(quotes);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch quotes', error: err.message });
+    res.status(500).json({ message: '❌ Failed to fetch quotes', error: err.message });
   }
 };
 
-// ✅ Get quotes of logged-in user (GET /api/quotes/my)
+// ✅ Get only current user's quotes
 const getUserQuotes = async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
+    const userId = req.userId;
 
     const quotes = await Quote.find({ user: userId }).sort({ createdAt: -1 });
     res.status(200).json(quotes);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch user quotes' });
+    res.status(500).json({ message: '❌ Failed to fetch user quotes', error: err.message });
   }
 };
 
-// ✅ Like/Unlike a quote (POST /api/quotes/:id/like)
+// ✅ Like/Unlike quote
 const toggleLike = async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
-
+    const userId = req.userId;
     const quote = await Quote.findById(req.params.id);
     if (!quote) return res.status(404).json({ message: 'Quote not found' });
 
@@ -68,15 +66,14 @@ const toggleLike = async (req, res) => {
       likes: quote.likes,
     });
   } catch (err) {
-    res.status(500).json({ message: 'Like failed', error: err.message });
+    res.status(500).json({ message: '❌ Like failed', error: err.message });
   }
 };
 
-// ✅ Save/Unsave a quote (POST /api/quotes/:id/save)
+// ✅ Save/Unsave quote
 const toggleSave = async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
-
+    const userId = req.userId;
     const quote = await Quote.findById(req.params.id);
     if (!quote) return res.status(404).json({ message: 'Quote not found' });
 
@@ -94,26 +91,26 @@ const toggleSave = async (req, res) => {
       saved: !alreadySaved,
     });
   } catch (err) {
-    res.status(500).json({ message: 'Save failed', error: err.message });
+    res.status(500).json({ message: '❌ Save failed', error: err.message });
   }
 };
 
-// ✅ Delete a quote (DELETE /api/quotes/:id)
+// ✅ Delete a quote (only user's own)
 const deleteQuote = async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
+    const userId = req.userId;
     const quote = await Quote.findOneAndDelete({
       _id: req.params.id,
-      user: userId, // Only allow user to delete their own quote
+      user: userId,
     });
 
     if (!quote) {
       return res.status(403).json({ message: 'Quote not found or unauthorized' });
     }
 
-    res.status(200).json({ message: 'Quote deleted successfully' });
+    res.status(200).json({ message: '✅ Quote deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to delete quote', error: err.message });
+    res.status(500).json({ message: '❌ Failed to delete quote', error: err.message });
   }
 };
 
@@ -123,5 +120,5 @@ module.exports = {
   getUserQuotes,
   toggleLike,
   toggleSave,
-  deleteQuote, // ✅ Export it!
+  deleteQuote,
 };
