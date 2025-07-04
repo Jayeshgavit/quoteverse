@@ -40,31 +40,38 @@ export default function Dashboard() {
   };
 
   const handleQuoteSubmit = async (e) => {
-    e.preventDefault();
-    setMessage('');
+  e.preventDefault();
+  setMessage('');
 
-    if (!quoteText || !author || !category) {
-      setMessage('❌ Please fill in all fields.');
-      return;
-    }
+  if (!quoteText || !author || !category) {
+    setMessage('❌ Please fill in all fields.');
+    return;
+  }
 
-    try {
-      const res = await axios.post('/quotes', {
-        text: quoteText,
-        author,
-        category,
-      });
+  try {
+    const res = await axios.post('/quotes', {
+      text: quoteText,
+      author,
+      category,
+    });
 
-      setMessage('✅ Quote uploaded successfully!');
-      setQuoteText('');
-      setAuthor('');
-      setCategory('');
-      setQuotes([res.data.quote, ...quotes]);
-    } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Something went wrong.';
-      setMessage(`❌ Upload failed. ${errorMsg}`);
-    }
-  };
+    setMessage('✅ Quote uploaded successfully!');
+    setQuoteText('');
+    setAuthor('');
+    setCategory('');
+    setQuotes([res.data.quote, ...quotes]);
+
+    // 🎉 Close the form after 1.5 seconds
+    setTimeout(() => {
+      setShowForm(false);
+      setMessage('');
+    }, 1500);
+  } catch (err) {
+    const errorMsg = err.response?.data?.message || 'Something went wrong.';
+    setMessage(`❌ Upload failed. ${errorMsg}`);
+  }
+};
+
 
   return (
     <div className="dashboard-wrapper">

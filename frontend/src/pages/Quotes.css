@@ -1,0 +1,97 @@
+.quotes-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background: #f2f2f2;
+}
+
+.quotes-wrapper {
+  max-width: 800px;
+  width: 100%;
+}
+
+.quotes-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.quotes-header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.quote-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.search-wrapper {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.quote-search {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: red;
+}
+
+.quote-sort {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.quote-categories {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.category-pill {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.category-pill.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.quote-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.no-quotes {
+  text-align: center;
+  font-size: 1rem;
+  color: #555;
+}

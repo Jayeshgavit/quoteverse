@@ -25,7 +25,19 @@ const getUserQuotes = async (req, res) => {
   }
 };
 
+const getAllQuotes = async (req, res) => {
+  try {
+    const quotes = await Quote.find().sort({ createdAt: -1 });
+    res.json(quotes);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch all quotes' });
+  }
+};
+
 module.exports = {
   addQuote,
-  getUserQuotes
+  getUserQuotes,
+  getAllQuotes, // ✅ include new one here
 };
+
+
