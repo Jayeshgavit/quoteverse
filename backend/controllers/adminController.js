@@ -22,7 +22,7 @@ exports.getAllUsers = async (req, res) => {
 // ✅ Block user by ID
 exports.blockUser = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.params.id, { isBlocked: true });
+    await User.findByIdAndUpdate(req.params.id, { blocked: true });
     res.json({ message: 'User blocked successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Failed to block user' });

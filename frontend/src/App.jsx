@@ -5,9 +5,9 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Quotes from './pages/Quotes';
 import Dashboard from './pages/Dashboard';
-import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './components/Admin/AdminDashboard';
-import ProtectedAdminRoute from './components/Admin/ProtectedAdminRoute'; // ✅ New import
+import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedAdminRoute from './components/Admin/ProtectedAdminRoute';
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* ✅ Protected Admin Route */}
+        {/* ✅ Admin */}
         <Route
           path="/admin/dashboard"
           element={
@@ -29,7 +29,7 @@ function App() {
           }
         />
 
-        {/* ✅ Protected User Route */}
+        {/* ✅ User */}
         <Route
           path="/dashboard"
           element={

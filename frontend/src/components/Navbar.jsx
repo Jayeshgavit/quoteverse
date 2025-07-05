@@ -5,22 +5,31 @@ import './Navbar.css';
 export default function Navbar() {
   const [theme, setTheme] = useState('light');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ Detect route changes
+  const location = useLocation();
 
-  // 🔄 Update on route change (login, logout, refresh)
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsLoggedIn(!!token);
-  }, [location.pathname]); // ✅ Re-check on every page change
+
+    if (token) {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      setUserRole(payload.role);
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-    document.documentElement.setAttribute('data-theme', theme);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     setIsLoggedIn(false);
     navigate('/login');
   };
@@ -40,7 +49,15 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>Dashboard</NavLink>
+            {userRole === 'admin' ? (
+              <NavLink to="/admin/dashboard" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                Admin Dashboard
+              </NavLink>
+            ) : (
+              <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                Dashboard
+              </NavLink>
+            )}
             <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </>
         )}

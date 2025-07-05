@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
+import { AuthContext } from '../context/AuthContext';
 import './Login.css';
 
 export default function Login() {
@@ -9,15 +10,19 @@ export default function Login() {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
+  const { login } = useContext(AuthContext); // ✅ Use global login function
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage('');
 
     try {
-      const res = await axios.post('http://localhost:2200/api/auth/login', {
+      // Step 1: Login API
+      const res = await axios.post('/auth/login', {
         email: form.email,
         password: form.password,
       });
@@ -25,13 +30,22 @@ export default function Login() {
       const token = res.data.token;
       localStorage.setItem('token', token);
 
-      // ✅ Decode token to extract role
+      // Step 2: Decode and get role
       const payload = JSON.parse(atob(token.split('.')[1]));
       const role = payload.role;
+      localStorage.setItem('role', role);
 
-      console.log('🔑 JWT Payload:', payload);
-      console.log('👤 Logged in role:', role);
+      // Step 3: Get full user info
+      const userRes = await axios.get('/auth/users/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      // Step 4: Set context
+      login(userRes.data);
+
+      // Step 5: Redirect
       setMessage(`✅ Login successful! Redirecting as ${role}...`);
       setForm({ email: '', password: '' });
 
@@ -41,16 +55,16 @@ export default function Login() {
         } else {
           navigate('/dashboard');
         }
-      }, 1500);
+      }, 800);
     } catch (err) {
-      setMessage('❌ Login failed. ' + (err.response?.data?.message || 'Please try again.'));
+      console.error('Login error:', err);
+      setMessage('❌ Login failed. ' + (err.response?.data?.message || 'Try again.'));
     }
   };
 
   return (
     <div className="login-container">
       <h2>🔐 Welcome Back to QuoteVerse</h2>
-
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -68,7 +82,6 @@ export default function Login() {
           onChange={handleChange}
           required
         />
-
         <label className="show-pass">
           <input
             type="checkbox"
@@ -77,14 +90,13 @@ export default function Login() {
           />
           Show Password
         </label>
-
         <button type="submit">Login</button>
       </form>
 
       {message && <p className="login-message">{message}</p>}
 
       <p className="login-footer">
-        Don’t have an account?{' '}
+        Don’t have an account?
         <span onClick={() => navigate('/register')} className="register-link">
           Register now
         </span>

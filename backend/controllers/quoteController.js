@@ -20,6 +20,28 @@ const addQuote = async (req, res) => {
 };
 
 // ✅ Get all quotes (public) with pagination
+// const getAllQuotes = async (req, res) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 20;
+//     const skip = (page - 1) * limit;
+
+//     const totalQuotes = await Quote.countDocuments();
+//     const quotes = await Quote.find()
+//       .sort({ createdAt: -1 })
+//       .skip(skip)
+//       .limit(limit)
+//       .populate('user', 'name');
+
+//     const hasMore = skip + limit < totalQuotes;
+
+//     res.status(200).json({ quotes, hasMore });
+//   } catch (err) {
+//     res.status(500).json({ message: '❌ Failed to fetch quotes', error: err.message });
+//   }
+// };
+
+// ✅ Get all quotes (for public and admin use)
 const getAllQuotes = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -27,19 +49,21 @@ const getAllQuotes = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const totalQuotes = await Quote.countDocuments();
+
     const quotes = await Quote.find()
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('user', 'name');
+      .populate('user', 'name email role');
 
     const hasMore = skip + limit < totalQuotes;
 
-    res.status(200).json({ quotes, hasMore });
+    res.status(200).json({ quotes, total: totalQuotes, hasMore });
   } catch (err) {
     res.status(500).json({ message: '❌ Failed to fetch quotes', error: err.message });
   }
 };
+
 
 // ✅ Get only current user's quotes (with pagination)
 const getUserQuotes = async (req, res) => {
