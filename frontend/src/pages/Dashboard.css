@@ -83,6 +83,8 @@
   justify-content: center;
   gap: 1.2rem;
   margin-bottom: 2rem;
+  background: #fcfcfc; /* clean white */
+
 }
 
 .dashboard-tabs button {
@@ -176,13 +178,25 @@
   color: #222;
 }
 
-.quote-card {
+/* .quote-card {
   background-color: #eaf4ff;
   padding: 1rem 1.2rem;
   margin-bottom: 1.2rem;
   border-left: 5px solid #0d6efd;
   border-radius: 10px;
   transition: 0.3s ease;
+  position: relative;
+} */
+.quote-card {
+  background: ghostwhite; /* 🌿 Matches your homepage */
+  padding: 1.2rem;
+  margin-bottom: 0.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  border-left: 4px solid #a2d1a5;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   position: relative;
 }
 
@@ -193,6 +207,7 @@
 .quote-card p {
   font-size: 1.05rem;
   margin-bottom: 0.4rem;
+  font-style: italic;
   color: #333;
 }
 

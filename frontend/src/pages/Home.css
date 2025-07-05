@@ -1,27 +1,30 @@
+/* 🌐 Global Container */
 .homepage-container {
   font-family: 'Poppins', sans-serif;
   padding: 1rem;
-  background: #f9f9f9;
-  text-align: center;
+  background: #f8f9fa;
+  color: #333;
 }
 
+/* 🎯 Hero Section */
 .homepage-hero {
   padding: 4rem 1.5rem;
-  background: linear-gradient(135deg, #d4fc79, #96e6a1);
+  background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
   border-radius: 12px;
   margin-bottom: 3rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  text-align: center;
 }
 
 .homepage-hero h1 {
-  font-size: 3rem;
+  font-size: clamp(2.2rem, 5vw, 3rem);
   color: #2e7d32;
   margin-bottom: 1rem;
 }
 
 .homepage-hero p {
-  font-size: 1.25rem;
-  color: #333;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: #444;
   margin-bottom: 2rem;
 }
 
@@ -70,31 +73,127 @@
   cursor: not-allowed;
 }
 
-/* 📃 Quotes Section */
-.homepage-quotes {
-  padding: 1rem;
-  display: grid;
-  gap: 1.2rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+/* 🌟 Recent Layout */
+.recent-layout {
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem;
+  margin-top: 2rem;
 }
 
+/* 🧱 Sidebars (hidden for now) */
+.recent-sidebar {
+  display: none;
+  flex-shrink: 1;
+  flex-grow: 0;
+  min-width: 60px;
+  max-width: 120px;
+  width: 10%;
+  height: 100%;
+  padding: 1rem;
+  background-color: #f3f3f3;
+  color: #888;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px dashed #b2dfdb;
+  font-size: 0.85rem;
+}
+
+/* 🎯 Center Quote Block */
+.recent-main {
+  flex: 1;
+  max-width: 1000px;
+  width: 100%;
+  background: ghostwhite;
+  border-radius: 14px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+.recent-main h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #2e7d32;
+ border-bottom: 2px solid #a0a7a55d;
+  padding-bottom: 0.4rem;
+
+  text-align: center;
+  width: 100%; /* force full width */
+  display: block;
+}
+
+
+
+/* 🧾 Quotes Column */
+.recent-quotes-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 📝 Stylish Quote Card */
 .homepage-quote-card {
   background: #ffffff;
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  text-align: left;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  border-left: 4px solid #2e7d32;
+  padding: 1.3rem 1.5rem;
+  border-left: 5px solid #00b894;
+  border-radius: 12px;
   font-style: italic;
   color: #333;
+  text-align: left;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.homepage-quote-card:hover {
+  transform: translateY(-4px);
+  border-left: 5px solid #93ce97;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.homepage-quote-card p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  font-style: italic;
+  color: #333;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  padding-left: 1.4rem;
+  position: relative;
+  margin-bottom: 0.4rem;
+}
+
+.homepage-quote-card small {
+  font-size: 0.9rem;
+  color: #666;
+    font-style: normal;
+}
+
+/* 🟢 View All Quotes Button */
+.view-more-btn {
+  margin: 2rem auto 0;
+  display: block;
+  padding: 0.75rem 1.8rem;
+  font-size: 1rem;
+  background: linear-gradient(to right, #00b894, #26a69a);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.view-more-btn:hover {
+  background: linear-gradient(to right, #00a383, #1e8e82);
+  transform: translateY(-2px);
 }
 
 /* 🌙 Footer */
 .homepage-footer {
-  background: #e0e0e0;
+  background: #f0f0f0;
   padding: 2rem 1rem;
   margin-top: 4rem;
   border-top: 1px solid #ccc;
+  text-align: center;
 }
 
 .footer-links {
@@ -122,31 +221,46 @@
 .homepage-footer strong {
   color: #1b5e20;
 }
-/* 🎯 Recent Quotes Tab Section */
-.recent-tab-section {
-  padding: 2rem 1rem;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  max-width: 1100px;
-  margin: 0 auto;
-  margin-top: 2rem;
-}
 
-.recent-tab-section h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: #2e7d32;
-  border-bottom: 2px solid #2e7d32;
-  display: inline-block;
-  padding-bottom: 0.3rem;
-}
+/* 📱 Mobile-Friendly Styles */
+@media (max-width: 768px) {
+  .recent-layout {
+    flex-direction: column;
+    padding: 1rem;
+  }
 
-/* Animate each quote slightly */
-.homepage-quote-card {
-  transition: transform 0.3s ease;
-}
+  .recent-main {
+    max-width: 100%;
+    padding: 1.2rem;
+  }
 
-.homepage-quote-card:hover {
-  transform: translateY(-5px);
+  .homepage-hero {
+    padding: 2.5rem 1rem;
+  }
+
+  .homepage-tabs {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .homepage-quote-card p {
+    font-size: 1rem;
+  }
+
+  .homepage-quote-card small {
+    font-size: 0.8rem;
+  }
+
+  .homepage-hero h1 {
+    font-size: 2rem;
+  }
+
+  .homepage-hero p {
+    font-size: 1rem;
+  }
+
+  .view-more-btn {
+    width: 100%;
+    max-width: 300px;
+  }
 }

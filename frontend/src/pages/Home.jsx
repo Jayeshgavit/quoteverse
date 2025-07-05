@@ -66,23 +66,35 @@ export default function Home() {
 
       {/* 📃 Quote Display Section */}
       {activeTab === 'recent' && (
-        <section className="recent-tab-section">
-          <h2>🕑 Recently Added Quotes</h2>
-          <div className="homepage-quotes">
-            {recentQuotes.length > 0 ? (
-              recentQuotes.map((quote) => (
-                <div className="homepage-quote-card" key={quote._id}>
-                  <p>“{quote.text}”</p>
-                  <small>
-                    — {quote.author} | {quote.category}
-                  </small>
-                </div>
-              ))
-            ) : (
-              <p>No quotes yet... Be the first to add one! ✨</p>
-            )}
-          </div>
-        </section>
+       <section className="recent-layout">
+  <div className="recent-sidebar">📢 Future Ads</div>
+
+  <div className="recent-main">
+    <h2>🕑 Recently Added Quotes</h2>
+    <div className="recent-quotes-column">
+      {recentQuotes.length > 0 ? (
+  <>
+    {recentQuotes.map((quote) => (
+      <div className="homepage-quote-card" key={quote._id}>
+        <p>“{quote.text}”</p>
+        <small>
+          — {quote.author} | {quote.category}
+        </small>
+      </div>
+    ))}
+    <button className="view-more-btn" onClick={() => navigate('/quotes')}>
+      🔎 View More Quotes
+    </button>
+  </>
+) : (
+  <p>No quotes yet... Be the first to add one! ✨</p>
+)}
+    </div>
+  </div>
+
+  <div className="recent-sidebar">📰 Announcements</div>
+</section>
+
       )}
 
       {/* 🌙 Footer */}
