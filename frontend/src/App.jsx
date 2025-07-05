@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import Quotes from './pages/Quotes';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute'; // ✅ Import it!
+import AdminDashboard from './components/Admin/AdminDashboard';
+
 
 function App() {
   return (
@@ -15,6 +17,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/quotes" element={<Quotes />} />
         <Route path="/register" element={<Register />} />
+     
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
         <Route
           path="/dashboard"
           element={

@@ -1,0 +1,206 @@
+.admin-wrapper {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 2rem;
+  background-color: #f4f6f8;
+  color: #333;
+  min-height: 100vh;
+}
+
+.admin-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.2rem;
+}
+
+.admin-header p {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.admin-navigation {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.admin-search-input {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  font-size: 1rem;
+}
+
+.admin-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Manage Users Section */
+.admin-user-section h2,
+.admin-quote-section h2,
+.admin-analytics h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.admin-user-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-user-card:hover {
+  background: #f1f1f1;
+}
+
+.admin-user-card.active {
+  border-left: 5px solid #4CAF50;
+  background-color: #eaf9ea;
+}
+
+.admin-user-card .role {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  color: white;
+  background-color: #888;
+  border-radius: 12px;
+}
+
+.admin-user-actions button {
+  margin-left: 0.5rem;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.admin-user-actions button:hover {
+  transform: scale(1.1);
+}
+
+.admin-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+.admin-pagination button {
+  background-color: #4CAF50;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-pagination button:hover {
+  background-color: #45a049;
+}
+
+/* Manage Quotes Section */
+.admin-quote-section {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-quote-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.admin-quote-card {
+  background-color: #f9f9f9;
+  border-left: 4px solid #4CAF50;
+  padding: 1rem;
+  border-radius: 8px;
+  position: relative;
+}
+
+.admin-quote-card p {
+  font-size: 1.05rem;
+  margin-bottom: 0.3rem;
+}
+
+.admin-quote-card small {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.admin-quote-card button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #e74c3c;
+}
+
+.admin-quote-card button:hover {
+  transform: scale(1.1);
+}
+
+/* Placeholder Text */
+.admin-placeholder {
+  font-style: italic;
+  color: #999;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Analytics Section */
+.admin-analytics {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.admin-stat-card {
+  flex: 1;
+  min-width: 150px;
+  text-align: center;
+  background-color: #ecf0f1;
+  padding: 1rem;
+  border-radius: 10px;
+  font-weight: bold;
+  color: #2c3e50;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
