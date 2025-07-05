@@ -1,3 +1,155 @@
+// // File: src/components/Admin/AdminDashboard.jsx
+// import { useEffect, useState } from 'react';
+// import axios from '../../api/axios';
+// import './AdminDashboard.css';
+
+// export default function AdminDashboard() {
+//   const [users, setUsers] = useState([]);
+//   const [quotes, setQuotes] = useState([]);
+//   const [selectedUser, setSelectedUser] = useState(null);
+//   const [searchUser, setSearchUser] = useState('');
+//   const [searchQuote, setSearchQuote] = useState('');
+//   const [analytics, setAnalytics] = useState({ users: 0, quotes: 0, admins: 0 });
+//   const [adminInfo, setAdminInfo] = useState({ name: '', email: '' });
+//   const [page, setPage] = useState(1);
+//   const limit = 5;
+
+//   useEffect(() => {
+//     fetchAdminInfo();
+//     fetchAnalytics();
+//     fetchUsers();
+//   }, [page]);
+
+//   const fetchAdminInfo = async () => {
+//     const res = await axios.get('/auth/users/me');
+//     setAdminInfo({ name: res.data.name, email: res.data.email });
+//   };
+
+//   const fetchAnalytics = async () => {
+//     const res = await axios.get('/admin/analytics');
+//     setAnalytics(res.data);
+//   };
+
+//   const fetchUsers = async () => {
+//     const res = await axios.get(`/admin/users?page=${page}&limit=${limit}`);
+//     setUsers(res.data.users);
+//     setSelectedUser(null);
+//     setQuotes([]);
+//   };
+
+//   const fetchUserQuotes = async (user) => {
+//     setSearchQuote('');
+//     setSelectedUser(user);
+//     const res = await axios.get(`/admin/user/${user._id}/quotes`);
+//     setQuotes(res.data);
+//   };
+
+//   const handleBlockUser = async (id) => {
+//     if (!window.confirm('Block this user?')) return;
+//     await axios.put(`/admin/user/block/${id}`);
+//     fetchUsers();
+//   };
+
+//   const handleDeleteUser = async (id) => {
+//     if (!window.confirm('Delete this user? This is irreversible.')) return;
+//     await axios.delete(`/admin/user/${id}`);
+//     fetchUsers();
+//   };
+
+//   const handleDeleteQuote = async (qid) => {
+//     if (!window.confirm('Delete this quote?')) return;
+//     await axios.delete(`/quotes/${qid}`);
+//     fetchUserQuotes(selectedUser);
+//   };
+
+//   const filteredUsers = users.filter(u =>
+//     u.name.toLowerCase().includes(searchUser.toLowerCase()) ||
+//     u.email.toLowerCase().includes(searchUser.toLowerCase()) ||
+//     u.role.toLowerCase().includes(searchUser.toLowerCase())
+//   );
+
+//   const filteredQuotes = quotes.filter(q =>
+//     q.text.toLowerCase().includes(searchQuote.toLowerCase()) ||
+//     q.author.toLowerCase().includes(searchQuote.toLowerCase())
+//   );
+
+//   return (
+//     <div className="adm-dashboard-wrapper">
+//       <header className="adm-dashboard-header">
+//         <h1>🔐 Admin Dashboard</h1>
+//         <p>👤 {adminInfo.name} | 📧 {adminInfo.email}</p>
+//         <p>📊 Users: {analytics.users} | Admins: {analytics.admins} | Quotes: {analytics.quotes}</p>
+//       </header>
+
+//       <div className="adm-dashboard-sections">
+//         {/* User Management */}
+//         <section className="adm-user-section">
+//           <h2>👥 Manage Users</h2>
+//           <input
+//             type="text"
+//             className="adm-search-input"
+//             placeholder="Search users by name, email or role..."
+//             value={searchUser}
+//             onChange={(e) => setSearchUser(e.target.value)}
+//           />
+//           <div className="adm-user-list">
+//             {filteredUsers.map(user => (
+//               <div
+//                 key={user._id}
+//                 className="adm-user-card"
+//                 onClick={() => fetchUserQuotes(user)}
+//               >
+//                 <p><strong>{user.name}</strong> <small>({user.email})</small></p>
+//                 <small>Role: {user.role}</small>
+//                 {user.role !== 'admin' && (
+//                   <div className="adm-user-actions">
+//                     <button onClick={e => { e.stopPropagation(); handleBlockUser(user._id); }}>🚫 Block</button>
+//                     <button onClick={e => { e.stopPropagation(); handleDeleteUser(user._id); }}>❌ Delete</button>
+//                   </div>
+//                 )}
+//               </div>
+//             ))}
+//           </div>
+
+//           <div className="adm-pagination">
+//             <button disabled={page === 1} onClick={() => setPage(p => Math.max(p - 1, 1))}>Prev</button>
+//             <span>Page {page}</span>
+//             <button disabled={users.length < limit} onClick={() => setPage(p => p + 1)}>Next</button>
+//           </div>
+//         </section>
+
+//         {/* Quote Management */}
+//         <section className="adm-quote-section">
+//           {selectedUser && (
+//             <>
+//               <h2>📝 Quotes by {selectedUser.name}</h2>
+//               <input
+//                 type="text"
+//                 className="adm-search-input"
+//                 placeholder="Search quotes by text or author..."
+//                 value={searchQuote}
+//                 onChange={(e) => setSearchQuote(e.target.value)}
+//               />
+//               <div className="adm-quote-list">
+//                 {filteredQuotes.length ? (
+//                   filteredQuotes.map(q => (
+//                     <div key={q._id} className="adm-quote-card">
+//                       <p>“{q.text}”</p>
+//                       <small>— {q.author}</small>
+//                       <button onClick={() => handleDeleteQuote(q._id)}>🗑 Delete</button>
+//                     </div>
+//                   ))
+//                 ) : (
+//                   <p className="adm-placeholder">No matching quotes found.</p>
+//                 )}
+//               </div>
+//             </>
+//           )}
+//         </section>
+//       </div>
+//     </div>
+//   );
+// }
 // File: src/components/Admin/AdminDashboard.jsx
 import { useEffect, useState } from 'react';
 import axios from '../../api/axios';
@@ -5,13 +157,14 @@ import './AdminDashboard.css';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
+  const [quotes, setQuotes] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [quoteSearch, setQuoteSearch] = useState('');
-  const [adminInfo, setAdminInfo] = useState({ name: '', email: '' });
+  const [searchUser, setSearchUser] = useState('');
+  const [searchQuote, setSearchQuote] = useState('');
   const [analytics, setAnalytics] = useState({ users: 0, quotes: 0, admins: 0 });
+  const [adminInfo, setAdminInfo] = useState({ name: '', email: '' });
   const [page, setPage] = useState(1);
-  const [limit] = useState(5);
+  const limit = 5;
 
   useEffect(() => {
     fetchAdminInfo();
@@ -20,147 +173,134 @@ export default function AdminDashboard() {
   }, [page]);
 
   const fetchAdminInfo = async () => {
-    const meRes = await axios.get('/auth/users/me');
-    setAdminInfo({ name: meRes.data.name, email: meRes.data.email });
+    const res = await axios.get('/auth/users/me');
+    setAdminInfo({ name: res.data.name, email: res.data.email });
   };
 
   const fetchAnalytics = async () => {
-    const [userRes, quoteRes] = await Promise.all([
-      axios.get('/admin/users'),
-      axios.get('/quotes/all'),
-    ]);
-    const adminCount = userRes.data.filter((u) => u.role === 'admin').length;
-    setAnalytics({
-      users: userRes.data.length,
-      quotes: quoteRes.data.quotes.length,
-      admins: adminCount,
-    });
+    const res = await axios.get('/admin/analytics');
+    setAnalytics(res.data);
   };
 
   const fetchUsers = async () => {
     const res = await axios.get(`/admin/users?page=${page}&limit=${limit}`);
-    setUsers(res.data);
+    setUsers(res.data.users);
+    setSelectedUser(null);
+    setQuotes([]);
   };
 
-  const handleRemoveUser = async (userId) => {
-    if (window.confirm('Are you sure you want to remove this user?')) {
-      await axios.delete(`/admin/user/${userId}`);
-      fetchUsers();
-      setSelectedUser(null);
-    }
+  const fetchUserQuotes = async (user) => {
+    setSearchQuote('');
+    setSelectedUser(user);
+    const res = await axios.get(`/admin/user/${user._id}/quotes`);
+    setQuotes(res.data);
   };
 
-  const handleBlockUser = async (userId) => {
-    if (window.confirm('Are you sure you want to block this user?')) {
-      await axios.put(`/admin/user/block/${userId}`);
-      fetchUsers();
-    }
+  const handleBlockUser = async (id) => {
+    if (!window.confirm('Block this user?')) return;
+    await axios.put(`/admin/user/block/${id}`);
+    fetchUsers();
   };
 
-  const handleDeleteQuote = async (quoteId) => {
-    if (window.confirm('Are you sure you want to delete this quote?')) {
-      await axios.delete(`/quotes/${quoteId}`);
-      fetchUsers();
-    }
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm('Delete this user?')) return;
+    await axios.delete(`/admin/user/${id}`);
+    fetchUsers();
   };
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.quotes?.some((q) =>
-      q.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      q.author.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+  const handleDeleteQuote = async (qid) => {
+    if (!window.confirm('Delete this quote?')) return;
+    await axios.delete(`/quotes/${qid}`);
+    fetchUserQuotes(selectedUser);
+  };
+
+  const filteredUsers = users.filter(u =>
+    u.name.toLowerCase().includes(searchUser.toLowerCase()) ||
+    u.email.toLowerCase().includes(searchUser.toLowerCase()) ||
+    u.role.toLowerCase().includes(searchUser.toLowerCase())
   );
 
-  const filteredQuotes = selectedUser?.quotes?.filter((q) =>
-    q.text.toLowerCase().includes(quoteSearch.toLowerCase()) ||
-    q.author.toLowerCase().includes(quoteSearch.toLowerCase())
+  const filteredQuotes = quotes.filter(q =>
+    q.text.toLowerCase().includes(searchQuote.toLowerCase()) ||
+    q.author.toLowerCase().includes(searchQuote.toLowerCase())
   );
 
   return (
     <div className="admin-wrapper">
       <header className="admin-header">
         <h1>🔐 Admin Dashboard</h1>
-        <p>{adminInfo.name} ({adminInfo.email})</p>
+        <p>👤 {adminInfo.name} | 📧 {adminInfo.email}</p>
+        <p>📊 Users: {analytics.users} | Admins: {analytics.admins} | Quotes: {analytics.quotes}</p>
       </header>
 
-      <div className="admin-navigation">
-        <input
-          type="text"
-          className="admin-search-input"
-          placeholder="Search user by name, email, role, quote..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-
       <div className="admin-sections">
-        {/* Manage Users */}
-        <section className="admin-user-section">
-          <h2>👤 Manage Users</h2>
-          <div className="admin-user-list">
-            {filteredUsers.map((user) => (
+        {/* LEFT PANEL */}
+        <section className="admin-user-panel">
+          <h2>👥 Manage Users</h2>
+          <input
+            type="text"
+            className="admin-search-input"
+            placeholder="Search users by name, email or role..."
+            value={searchUser}
+            onChange={(e) => setSearchUser(e.target.value)}
+          />
+          <div className="admin-user-scroll">
+            {filteredUsers.map(user => (
               <div
                 key={user._id}
-                className={`admin-user-card ${selectedUser?._id === user._id ? 'active' : ''}`}
-                onClick={() => setSelectedUser(user)}
+                className={`admin-user-card ${selectedUser?._id === user._id ? 'selected' : ''}`}
+                onClick={() => fetchUserQuotes(user)}
               >
-                <div>
-                  <strong>{user.name}</strong>
+                <div className="admin-user-card__header">
+                  <h4>{user.name}</h4>
                   <p>{user.email}</p>
-                  <span className="role">{user.role}</span>
+                  <span className={`admin-user-card__role ${user.role}`}>{user.role}</span>
                 </div>
-                <div className="admin-user-actions">
-                  <button onClick={(e) => { e.stopPropagation(); handleBlockUser(user._id); }}>🚫</button>
-                  <button onClick={(e) => { e.stopPropagation(); handleRemoveUser(user._id); }}>❌</button>
-                </div>
+                {user.role !== 'admin' && (
+                  <div className="admin-user-card__actions">
+                    <button onClick={(e) => { e.stopPropagation(); handleBlockUser(user._id); }}>🚫</button>
+                    <button onClick={(e) => { e.stopPropagation(); handleDeleteUser(user._id); }}>❌</button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
           <div className="admin-pagination">
-            <button onClick={() => setPage((p) => Math.max(p - 1, 1))}>Previous</button>
+            <button onClick={() => setPage(p => Math.max(p - 1, 1))}>Prev</button>
             <span>Page {page}</span>
-            <button onClick={() => setPage((p) => p + 1)}>Next</button>
+            <button onClick={() => setPage(p => p + 1)}>Next</button>
           </div>
         </section>
 
-        {/* Manage Selected User's Quotes */}
-        <section className="admin-quote-section">
+        {/* RIGHT PANEL */}
+        <section className="admin-quote-panel">
           {selectedUser ? (
             <>
-              <h2>📚 Quotes by {selectedUser.name}</h2>
+              <h2>📝 Quotes by {selectedUser.name}</h2>
               <input
                 type="text"
                 className="admin-search-input"
-                placeholder="Search quotes or author..."
-                value={quoteSearch}
-                onChange={(e) => setQuoteSearch(e.target.value)}
+                placeholder="Search quotes by text or author..."
+                value={searchQuote}
+                onChange={(e) => setSearchQuote(e.target.value)}
               />
               <div className="admin-quote-list">
-                {filteredQuotes?.map((q) => (
-                  <div className="admin-quote-card" key={q._id}>
-                    <p>“{q.text}”</p>
-                    <small>{q.author} | {q.category}</small>
-                    <button onClick={() => handleDeleteQuote(q._id)}>🗑 Delete</button>
-                  </div>
-                )) || <p>No quotes found.</p>}
+                {filteredQuotes.length ? (
+                  filteredQuotes.map(q => (
+                    <div key={q._id} className="admin-quote-card">
+                      <p>“{q.text}”</p>
+                      <small>— {q.author}</small>
+                      <button onClick={() => handleDeleteQuote(q._id)}>🗑</button>
+                    </div>
+                  ))
+                ) : (
+                  <p className="admin-empty-note">No matching quotes found.</p>
+                )}
               </div>
             </>
           ) : (
-            <p className="admin-placeholder">Select a user to view their quotes.</p>
+            <p className="admin-empty-note">👈 Select a user to view quotes.</p>
           )}
-        </section>
-
-        {/* Analytics Dashboard */}
-        <section className="admin-analytics">
-          <h2>📊 Analytics</h2>
-          <div className="admin-stats">
-            <div className="admin-stat-card">👥 Total Users: {analytics.users}</div>
-            <div className="admin-stat-card">🛡 Admins: {analytics.admins}</div>
-            <div className="admin-stat-card">📝 Total Quotes: {analytics.quotes}</div>
-          </div>
         </section>
       </div>
     </div>
