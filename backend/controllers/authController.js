@@ -30,7 +30,7 @@ const register = async (req, res) => {
   }
 };
 
-// ✅ Login User
+// ✅ Login User (with Role)
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -38,14 +38,23 @@ const login = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: '❌ Invalid credentials' });
 
+    // ✅ Check if account is blocked
+    if (user.blocked) return res.status(403).json({ message: '🚫 Account is blocked by Admin' });
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: '❌ Invalid credentials' });
 
     const token = jwt.sign(
-      { userId: user._id },
+      {
+        userId: user._id,
+        role: user.role, // 👈 Add role in JWT
+      },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
+
+    // ✅ Dev logging
+    console.log('🔑 JWT Payload:', { userId: user._id, role: user.role });
 
     res.json({
       token,
@@ -53,6 +62,7 @@ const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         profilePic: user.profilePic,
       },
     });
@@ -66,7 +76,7 @@ const login = async (req, res) => {
 // ✅ Get Logged-in User Info
 const getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select('name email profilePic');
+    const user = await User.findById(req.userId).select('name email role profilePic');
     if (!user) return res.status(404).json({ message: '❌ User not found' });
 
     res.json(user);
@@ -83,7 +93,7 @@ const updateProfilePic = async (req, res) => {
       req.userId,
       { profilePic },
       { new: true }
-    ).select('name email profilePic');
+    ).select('name email role profilePic');
 
     res.json({ message: '✅ Profile picture updated', user: updatedUser });
 

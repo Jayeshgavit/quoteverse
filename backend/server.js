@@ -25,9 +25,14 @@ mongoose.connect(process.env.MONGO_URI, {
   process.exit(1);
 });
 
+const adminRoutes = require('./routes/adminRoutes');
+app.use('/api/admin', adminRoutes);
+
 // Routes
-app.use('/api/quotes', require('./routes/quoteRoutes'));
-app.use('/api/auth', require('./routes/authRoutes')); // Login/Register/Profile routes
+// server.js
+app.use('/api', require('./routes/quoteRoutes'));  // ✅ cleaner if nested inside /api
+app.use('/api', require('./routes/authRoutes'));   // ✅ so all API paths start with /api/
+
 
 // Root Endpoint
 app.get('/', (req, res) => {
