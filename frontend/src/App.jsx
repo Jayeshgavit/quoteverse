@@ -5,7 +5,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Quotes from './pages/Quotes';
 import Dashboard from './pages/Dashboard';
-
+import ProtectedRoute from './components/ProtectedRoute'; // ✅ Import it!
 
 function App() {
   return (
@@ -15,7 +15,14 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/quotes" element={<Quotes />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
