@@ -1,0 +1,152 @@
+.homepage-container {
+  font-family: 'Poppins', sans-serif;
+  padding: 1rem;
+  background: #f9f9f9;
+  text-align: center;
+}
+
+.homepage-hero {
+  padding: 4rem 1.5rem;
+  background: linear-gradient(135deg, #d4fc79, #96e6a1);
+  border-radius: 12px;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.homepage-hero h1 {
+  font-size: 3rem;
+  color: #2e7d32;
+  margin-bottom: 1rem;
+}
+
+.homepage-hero p {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.homepage-btn {
+  padding: 0.8rem 1.6rem;
+  background: #2e7d32;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.homepage-btn:hover {
+  background: #1b5e20;
+}
+
+/* 🧭 Tab Bar */
+.homepage-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.homepage-tabs button {
+  padding: 0.6rem 1.2rem;
+  border: 2px solid #2e7d32;
+  background: white;
+  color: #2e7d32;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.homepage-tabs .active {
+  background: #2e7d32;
+  color: white;
+}
+
+.homepage-tabs .disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 📃 Quotes Section */
+.homepage-quotes {
+  padding: 1rem;
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.homepage-quote-card {
+  background: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  text-align: left;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #2e7d32;
+  font-style: italic;
+  color: #333;
+}
+
+/* 🌙 Footer */
+.homepage-footer {
+  background: #e0e0e0;
+  padding: 2rem 1rem;
+  margin-top: 4rem;
+  border-top: 1px solid #ccc;
+}
+
+.footer-links {
+  margin-bottom: 1rem;
+}
+
+.footer-links span {
+  margin: 0 1rem;
+  cursor: pointer;
+  color: #2e7d32;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.footer-links span:hover {
+  color: #1b5e20;
+}
+
+.homepage-footer p {
+  font-size: 0.95rem;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.homepage-footer strong {
+  color: #1b5e20;
+}
+/* 🎯 Recent Quotes Tab Section */
+.recent-tab-section {
+  padding: 2rem 1rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 1100px;
+  margin: 0 auto;
+  margin-top: 2rem;
+}
+
+.recent-tab-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #2e7d32;
+  border-bottom: 2px solid #2e7d32;
+  display: inline-block;
+  padding-bottom: 0.3rem;
+}
+
+/* Animate each quote slightly */
+.homepage-quote-card {
+  transition: transform 0.3s ease;
+}
+
+.homepage-quote-card:hover {
+  transform: translateY(-5px);
+}
