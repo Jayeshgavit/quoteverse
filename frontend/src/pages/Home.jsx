@@ -9,29 +9,20 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('recent');
   const navigate = useNavigate();
 
-  // ✅ Fetch recent quotes
+  // ✅ Fetch recent quotes directly from backend
   useEffect(() => {
-    fetchQuotes();
+    fetchRecentQuotes();
   }, []);
 
-  const fetchQuotes = async () => {
-  try {
-    const res = await axios.get('/quotes/all'); // ✅ Correct endpoint
-    const recent = res.data
-      .slice()
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      .slice(0, 5); // 🧠 Only Top 5 Recent
-    setQuotes(recent);
-    console.log('✅ Fetched recent quotes:', recent);
-  } catch (err) {
-    console.error('❌ Error fetching recent quotes:', err);
-  }
-};
-  // 📅 Get recent 5
-  const recentQuotes = quotes
-    .slice()
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 5);
+  const fetchRecentQuotes = async () => {
+    try {
+      const res = await axios.get('/quotes/recent'); // ✅ New efficient route
+      setQuotes(res.data);
+      console.log('✅ Fetched recent quotes:', res.data);
+    } catch (err) {
+      console.error('❌ Error fetching recent quotes:', err);
+    }
+  };
 
   // ➕ Add Quote handler
   const handleAddQuote = () => {
@@ -66,35 +57,37 @@ export default function Home() {
 
       {/* 📃 Quote Display Section */}
       {activeTab === 'recent' && (
-       <section className="recent-layout">
-  <div className="recent-sidebar">📢 Future Ads</div>
+        <section className="recent-layout">
+          <div className="recent-sidebar">📢 Future Ads</div>
 
-  <div className="recent-main">
-    <h2>🕑 Recently Added Quotes</h2>
-    <div className="recent-quotes-column">
-      {recentQuotes.length > 0 ? (
-  <>
-    {recentQuotes.map((quote) => (
-      <div className="homepage-quote-card" key={quote._id}>
-        <p>“{quote.text}”</p>
-        <small>
-          — {quote.author} | {quote.category}
-        </small>
-      </div>
-    ))}
-    <button className="view-more-btn" onClick={() => navigate('/quotes')}>
-      🔎 View More Quotes
-    </button>
-  </>
-) : (
-  <p>No quotes yet... Be the first to add one! ✨</p>
-)}
-    </div>
-  </div>
+          <div className="recent-main">
+            <h2>🕑 Recently Added Quotes</h2>
+            <div className="recent-quotes-column">
+              {quotes.length > 0 ? (
+                <>
+                  {quotes.map((quote) => (
+                    <div className="homepage-quote-card" key={quote._id}>
+                      <p>“{quote.text}”</p>
+                      <small>
+                        — {quote.author} | {quote.category}
+                      </small>
+                    </div>
+                  ))}
+                  <button
+                    className="view-more-btn"
+                    onClick={() => navigate('/quotes')}
+                  >
+                    🔎 View More Quotes
+                  </button>
+                </>
+              ) : (
+                <p>No quotes yet... Be the first to add one! ✨</p>
+              )}
+            </div>
+          </div>
 
-  <div className="recent-sidebar">📰 Announcements</div>
-</section>
-
+          <div className="recent-sidebar">📰 Announcements</div>
+        </section>
       )}
 
       {/* 🌙 Footer */}

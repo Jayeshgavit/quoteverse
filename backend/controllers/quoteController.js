@@ -19,27 +19,49 @@ const addQuote = async (req, res) => {
   }
 };
 
-// ✅ Get all quotes (public)
+// ✅ Get all quotes (public) with pagination
 const getAllQuotes = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const totalQuotes = await Quote.countDocuments();
     const quotes = await Quote.find()
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .populate('user', 'name');
-    res.status(200).json(quotes);
+
+    const hasMore = skip + limit < totalQuotes;
+
+    res.status(200).json({ quotes, hasMore });
   } catch (err) {
     res.status(500).json({ message: '❌ Failed to fetch quotes', error: err.message });
   }
 };
 
-// ✅ Get only current user's quotes
+// ✅ Get only current user's quotes (with pagination)
 const getUserQuotes = async (req, res) => {
-  try {
-    const userId = req.userId;
+ 
+  const userId = req.userId;
 
-    const quotes = await Quote.find({ user: userId }).sort({ createdAt: -1 });
-    res.status(200).json(quotes);
-  } catch (err) {
-    res.status(500).json({ message: '❌ Failed to fetch user quotes', error: err.message });
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  try {
+    const quotes = await Quote.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Quote.countDocuments({ user: userId });
+    const hasMore = skip + limit < total;
+
+    res.status(200).json({ quotes, total, hasMore });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user quotes' });
   }
 };
 
@@ -114,11 +136,26 @@ const deleteQuote = async (req, res) => {
   }
 };
 
+// ✅ Get Top 5 Most Recent Quotes (For Home Page)
+const getRecentQuotes = async (req, res) => {
+  try {
+    const quotes = await Quote.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate('user', 'name');
+
+    res.status(200).json(quotes);
+  } catch (err) {
+    res.status(500).json({ message: '❌ Failed to fetch recent quotes', error: err.message });
+  }
+};
+
 module.exports = {
   addQuote,
   getAllQuotes,
-  getUserQuotes,
+  getUserQuotes,      // ✅ Properly exported now
   toggleLike,
   toggleSave,
   deleteQuote,
+  getRecentQuotes,
 };

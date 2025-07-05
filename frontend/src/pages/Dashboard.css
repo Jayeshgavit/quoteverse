@@ -209,7 +209,7 @@
   margin-bottom: 0.4rem;
   font-style: italic;
   color: #333;
-}
+} 
 
 .quote-meta {
   font-size: 0.9rem;
@@ -233,4 +233,23 @@
 
 .delete-quote-btn:hover {
   background-color: #bd2130;
+}
+.load-more-btn {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.8rem 2rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.load-more-btn:hover {
+  background-color: #43a047;
+  transform: scale(1.05);
 }

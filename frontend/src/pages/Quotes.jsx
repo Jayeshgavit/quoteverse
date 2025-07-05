@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode';
 import axios from '../api/axios';
 import QuoteCard from '../components/QuoteCard';
 import './Quotes.css';
@@ -10,26 +10,37 @@ export default function Quotes() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortOption, setSortOption] = useState('newest');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const token = localStorage.getItem('token');
-const decoded = token ? jwtDecode(token) : null;
-  const userId = decoded?.userId || decoded?._id; // Adjust based on your token payload
+  const decoded = token ? jwtDecode(token) : null;
+  const userId = decoded?.userId || decoded?._id;
 
-  // ✅ Fetch quotes from backend
+  // ✅ Fetch quotes on first load & when page increases
   useEffect(() => {
     const fetchQuotes = async () => {
       try {
-        const res = await axios.get('/quotes/all'); // backend route
-        setQuotes(res.data);
+        const res = await axios.get(`/quotes/all?page=${page}&limit=20`);
+        const { quotes: newQuotes, hasMore: more } = res.data;
+
+        // avoid duplication
+        setQuotes(prev => {
+          const ids = new Set(prev.map(q => q._id));
+          const filtered = newQuotes.filter(q => !ids.has(q._id));
+          return [...prev, ...filtered];
+        });
+
+        setHasMore(more);
       } catch (error) {
         console.error('Error fetching quotes:', error);
       }
     };
 
     fetchQuotes();
-  }, []);
+  }, [page]);
 
-  // ✅ Apply filters and sorting
+  // ✅ Apply search, filter, and sort
   useEffect(() => {
     let result = [...quotes];
 
@@ -46,21 +57,18 @@ const decoded = token ? jwtDecode(token) : null;
 
     if (sortOption === 'newest') {
       result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    } else if (sortOption === 'oldest') {
+    } else {
       result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     }
 
     setFilteredQuotes(result);
   }, [quotes, searchTerm, selectedCategory, sortOption]);
 
-  const clearSearch = () => {
-    setSearchTerm('');
-  };
+  const clearSearch = () => setSearchTerm('');
 
   return (
     <div className="quotes-container">
       <div className="quotes-wrapper">
-
         {/* 📚 Header */}
         <div className="quotes-header">
           <h2>📚 Discover Quotes</h2>
@@ -115,6 +123,18 @@ const decoded = token ? jwtDecode(token) : null;
             ))
           )}
         </div>
+
+        {/* ⬇️ Load More */}
+        {hasMore && filteredQuotes.length >= 20 && (
+          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+            <button
+              className="view-more-btn"
+              onClick={() => setPage(prev => prev + 1)}
+            >
+              ⬇️ Load More Quotes
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

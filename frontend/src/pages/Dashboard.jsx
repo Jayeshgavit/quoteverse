@@ -33,22 +33,42 @@ export default function Dashboard() {
   const fileInputRef = useRef(null);
   const [userData, setUserData] = useState({ name: '', email: '' });
 
+  // 🆕 Pagination
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
   const fetchProfile = async () => {
     const res = await axios.get('/auth/users/me');
     setProfilePic(res.data.profilePic || 'https://i.pravatar.cc/100?img=13');
     setUserData({ name: res.data.name, email: res.data.email });
   };
 
-  const fetchMyQuotes = async () => {
-    const res = await axios.get('/quotes/my');
-    setMyQuotes(res.data);
+  const fetchMyQuotes = async (pageNum = 1) => {
+    try {
+      const res = await axios.get(`/quotes/my?page=${pageNum}&limit=5`);
+      if (pageNum === 1) {
+        setMyQuotes(res.data.quotes);
+      } else {
+        setMyQuotes((prev) => [...prev, ...res.data.quotes]);
+      }
+      const totalFetched = (pageNum - 1) * 5 + res.data.quotes.length;
+      setHasMore(totalFetched < res.data.total);
+    } catch (err) {
+      setError('❌ Failed to load your quotes.');
+    }
+  };
+
+  const loadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchMyQuotes(nextPage);
   };
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        await Promise.all([fetchProfile(), fetchMyQuotes()]);
+        await Promise.all([fetchProfile(), fetchMyQuotes(1)]);
       } catch (err) {
         setError('Failed to load dashboard data.');
       } finally {
@@ -180,9 +200,17 @@ export default function Dashboard() {
         <section className="my-quotes-section">
           <h3>📝 Your Shared Quotes</h3>
           {myQuotes.length > 0 ? (
-            myQuotes.map((quote) => (
-              <QuoteCard key={quote._id} quote={quote} onDelete={handleDelete} />
-            ))
+            <>
+              {myQuotes.map((quote) => (
+                <QuoteCard key={quote._id} quote={quote} onDelete={handleDelete} />
+              ))}
+              {hasMore && (
+                <button className="load-more-btn" onClick={loadMore}>
+                  🔽 Load More
+                </button>
+              )}
+              {!hasMore && <p className="end-text">✨ That’s all for now!</p>}
+            </>
           ) : (
             <p>No quotes yet. Share your first one!</p>
           )}

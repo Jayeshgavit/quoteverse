@@ -8,7 +8,8 @@ const {
   getUserQuotes,
   toggleLike,
   toggleSave,
-  deleteQuote,  // ✅ New Controller
+  deleteQuote,
+  getRecentQuotes, // ✅ New function added here
 } = require('../controllers/quoteController');
 
 // ✅ Add a new quote (protected)
@@ -16,6 +17,9 @@ router.post('/', verifyToken, addQuote);
 
 // ✅ Get all public quotes (no login required)
 router.get('/all', getAllQuotes);
+
+// ✅ Get recent 5 quotes (for homepage)
+router.get('/recent', getRecentQuotes); // ✅ NEW route
 
 // ✅ Get quotes for the logged-in user
 router.get('/my', verifyToken, getUserQuotes);
@@ -27,6 +31,6 @@ router.post('/:id/like', verifyToken, toggleLike);
 router.post('/:id/save', verifyToken, toggleSave);
 
 // ✅ Delete a user's own quote
-router.delete('/:id', verifyToken, deleteQuote); // 👈 Added this route
+router.delete('/:id', verifyToken, deleteQuote);
 
 module.exports = router;
